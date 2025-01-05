@@ -16,6 +16,7 @@ enum editorKey {
     ARROW_RIGHT,
     ARROW_UP,
     ARROW_DOWN,
+    DEL_KEY,
     HOME_KEY,
     END_KEY,
     PAGE_UP,
@@ -76,6 +77,7 @@ int editorReadKey() {
                 if (seq[2] == '~') {
                     switch (seq[1]) {
                         case '1': return HOME_KEY;
+                        case '3': return DEL_KEY;
                         case '4': return END_KEY;
                         case '5': return PAGE_UP;
                         case '6': return PAGE_DOWN;
@@ -160,6 +162,8 @@ void abFree(struct abuf *ab) {
 void editorDrawRows(struct abuf *ab) {
     int y;
     for (y = 0; y < E.screenrows; y++) {
+        abAppend(ab, "\x1b[2K", 4);
+        abAppend(ab, "\x1b[G", 3);
         if (y == E.screenrows / 3) {
             char welcome[80];
             int welcomelen = snprintf(welcome, sizeof(welcome), 
@@ -260,9 +264,6 @@ void initEditor() {
 }
 
 int main() {
-    write(STDOUT_FILENO, "\x1b[2J", 4);
-    write(STDOUT_FILENO, "\x1b[H", 3);
-
     enableRawMode();
     initEditor();
     while (1) {
