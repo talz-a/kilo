@@ -57,6 +57,8 @@ struct editorConfig {
 
 struct editorConfig E;
 
+void editorSetStatusMessage(const char *fmt, ...);
+
 void die(const char *s) {
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[H", 3);
@@ -280,10 +282,20 @@ void editorSave() {
     char *buf = editorRowsToString(&len);
 
     int fd = open(E.filename, O_RDWR | O_CREAT, 0644);
-    ftruncate(fd, len);
-    write(fd, buf, len);
-    close(fd);
+    if (fd != -1) {
+        if (ftruncate(fd, len) != -1) {
+            if (write(fd, buf, len) == len) {
+                close(fd);
+                free(buf);
+                editorSetStatusMessage("%d bytes written to disk", len);
+                return;
+            }
+        }
+        close(fd);
+    }
+
     free(buf);
+    editorSetStatusMessage("Cant save! I/O error: %s", strerror(errno));
 }
 
 struct abuf {
@@ -531,7 +543,7 @@ int main(int argc, char *argv[]) {
     initEditor();
     if (argc >= 2) editorOpen(argv[1]);
 
-    editorSetStatusMessage("HELP: Ctrl-Q = quit");
+    editorSetStatusMessage("HELP: Ctrl-S = save | Ctrl-Q = quit");
 
     while (1) {
         editorRefreshScreen();
