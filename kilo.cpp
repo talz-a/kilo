@@ -1,9 +1,3 @@
-#define _DEFAULT_SOURCE
-#define _BSD_SOURCE
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
-
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
