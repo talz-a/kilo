@@ -1,6 +1,6 @@
-# Kilo: Simple C++ Text Editor
+# Kilo: C++ Text Editor
 
-A lightweight, terminal-based text editor written in **C++23** with no external dependencies. Supports basic editing, file I/O, and syntax highlighting in under 1,000 lines of code.
+A lightweight, terminal-based text editor written in C++ with no external dependencies. Supports basic editing, file I/O, and syntax highlighting in under 1,000 lines of code.
 
 > [!WARNING]
 > This software is not production ready and is intended for learning and experimentation.
